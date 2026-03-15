@@ -25,6 +25,11 @@ bilin_ap = lib.bilin_ap
 for bilin in bilin_lp, bilin_hp, bilin_ap:
     bilin.argtypes = [c.c_float]
     bilin.restype = c_bilin
+bilin_ls = lib.bilin_ls
+bilin_hs = lib.bilin_hs
+for bilin in bilin_ls, bilin_hs:
+    bilin.argtypes = [c.c_float, c.c_float]
+    bilin.restype = c_bilin
 
 bilin_proc = lib.bilin_proc
 bilin_proc.argtypes = [c_float_ptr,
@@ -50,7 +55,9 @@ for biquad in biquad_lp, biquad_hp, biquad_bp, biquad_notch:
     biquad.argtypes = [c.c_float, c.c_float]
     biquad.restype = c_biquad
 biquad_peq = lib.biquad_peq
-for biquad in biquad_peq, :
+biquad_ls = lib.biquad_ls
+biquad_hs = lib.biquad_hs
+for biquad in biquad_peq, biquad_ls, biquad_hs:
     biquad.argtypes = [c.c_float, c.c_float, c.c_float]
     biquad.restype = c_biquad
 

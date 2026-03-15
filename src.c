@@ -17,12 +17,32 @@ struct bilin bilin_lp(float omega) {
   };
 }
 
+struct bilin bilin_ls(float omega, float a) {
+  return (struct bilin) {
+    1.f / a * sinf(omega) + 1.f + cosf(omega),
+    1.f / a * sinf(omega) - 1.f - cosf(omega),
+    a * sinf(omega) + 1.f + cosf(omega),
+    a * sinf(omega) - 1.f - cosf(omega),
+    .0f, .0f,
+  };
+}
+
 struct bilin bilin_hp(float omega) {
   return (struct bilin) {
     sinf(omega) + 1.f + cosf(omega),
     sinf(omega) - 1.f - cosf(omega),
     1.f + cosf(omega),
     -1.f - cosf(omega),
+    .0f, .0f,
+  };
+}
+
+struct bilin bilin_hs(float omega, float a) {
+  return (struct bilin) {
+    sinf(omega) + 1.f / a + 1.f / a * cosf(omega),
+    sinf(omega) - 1.f / a - 1.f / a * cosf(omega),
+    sinf(omega) + a + a * cosf(omega),
+    sinf(omega) - a - a * cosf(omega),
     .0f, .0f,
   };
 }
@@ -75,6 +95,19 @@ struct biquad biquad_lp(float omega, float q) {
   };
 }
 
+struct biquad biquad_ls(float omega, float q, float a) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    (a + 1.f) + (a - 1.f) * cosf(omega) + 2.f * sqrtf(a) * alpha,
+    -2.f * ((a - 1.f) + (a + 1.f) * cosf(omega)),
+    (a + 1.f) + (a - 1.f) * cosf(omega) - 2.f * sqrtf(a) * alpha,
+    a * ((a + 1.f) - (a - 1.f) * cosf(omega) + 2.f * sqrtf(a) * alpha),
+    2.f * a * ((a - 1.f) - (a + 1.f) * cosf(omega)),
+    (a + 1.f) + (a - 1.f) * cosf(omega) - 2 * sqrtf(a) * alpha,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
 struct biquad biquad_hp(float omega, float q) {
   float alpha = sinf(omega) / (2.f * q);
   return (struct biquad) {
@@ -88,11 +121,24 @@ struct biquad biquad_hp(float omega, float q) {
   };
 }
 
+struct biquad biquad_hs(float omega, float q, float a) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    (a + 1.f) + (a - 1.f) * cosf(omega) + 2.f * sqrtf(a) * alpha,
+    2.f * ((a - 1.f) + (a + 1.f) * cosf(omega)),
+    (a + 1.f) + (a - 1.f) * cosf(omega) - 2.f * sqrtf(a) * alpha,
+    a * ((a + 1.f) + (a - 1.f) * cosf(omega) + 2.f * sqrtf(a) * alpha),
+    -2.f * a * ((a - 1.f) + (a + 1.f) * cosf(omega)),
+    (a + 1.f) + (a + 1.f) * cosf(omega) - 2 * sqrtf(a) * alpha,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
 struct biquad biquad_bp(float omega, float q) {
   float alpha = sinf(omega) / (2.f * q);
   return (struct biquad) {
     1.f + alpha,
-    -2.f * cos(omega),
+    -2.f * cosf(omega),
     1.f - alpha,
     alpha,
     0,
