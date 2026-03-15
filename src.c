@@ -49,7 +49,7 @@ struct biquad {
   float x_1, x_2, y_1, y_2;
 };
 
-struct biquad biquad_peq(float omega, float a, float q) {
+struct biquad biquad_peq(float omega, float q, float a) {
   float alpha = sinf(omega) / (2.f * q);
   return (struct biquad) {
     1.f + alpha / a,
@@ -58,6 +58,58 @@ struct biquad biquad_peq(float omega, float a, float q) {
     1.f + alpha * a,
     -2.f * cosf(omega),
     1.f - alpha * a,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
+struct biquad biquad_lp(float omega, float q) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    1.f + alpha,
+    -2.f * cosf(omega),
+    1.f - alpha,
+    (1.f - cosf(omega)) / 2.f,
+    1.f - cosf(omega),
+    (1.f - cosf(omega)) / 2.f,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
+struct biquad biquad_hp(float omega, float q) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    1.f + alpha,
+    -2.f * cosf(omega),
+    1.f - alpha,
+    (1.f + cosf(omega)) / 2.f,
+    -(1.f + cosf(omega)),
+    (1.f + cosf(omega)) / 2.f,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
+struct biquad biquad_bp(float omega, float q) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    1.f + alpha,
+    -2.f * cos(omega),
+    1.f - alpha,
+    alpha,
+    0,
+    -alpha,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
+struct biquad biquad_notch(float omega, float q) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    1.f + alpha,
+    -2.f * cosf(omega),
+    1.f - alpha,
+    1.f,
+    -2.f * cosf(omega),
+    1.f,
     .0f, .0f, .0f, .0f,
   };
 }
