@@ -1,5 +1,6 @@
 import ctypes as c
 from os import path
+import numpy as np
 
 c_float_ptr = c.POINTER(c.c_float)
 
@@ -25,3 +26,11 @@ bilin_proc.argtypes = [c_float_ptr,
                        c.c_uint64,
                        c.POINTER(c_bilin)]
 bilin_proc.restype = None
+
+
+def bilin(signal, filter):
+    result = np.empty_like(signal)
+    bilin_proc(signal.ctypes.data_as(c_float_ptr),
+               result.ctypes.data_as(c_float_ptr),
+               len(signal), c.pointer(filter))
+    return result
