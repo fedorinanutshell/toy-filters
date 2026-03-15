@@ -1,13 +1,12 @@
-from bind import biquad_notch, biquad
+from bind import biquad_peq, biquad
 
-import ctypes as c
 import numpy as np
 from matplotlib import pyplot as plt
 
 x = np.zeros(2**16, np.float32)
 x[0] = 1.
 
-f = biquad_notch(.1 * np.pi, 3.)
+f = biquad_peq(.1 * np.pi, 4., 2.)
 
 y = biquad(x, f)
 print(sum(y))
