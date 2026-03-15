@@ -1,12 +1,12 @@
-from bind import bilin_lp, bilin
+from bind import biquad_peq, biquad
 
 import sounddevice as sd
 import soundfile as sf
 import numpy as np
 
-data, fs = sf.read('radio.ogg', dtype=np.float32)
+data, fs = sf.read('birds.ogg', dtype=np.float32)
 
-bl = bilin_lp(.5 * np.pi)
-data = bilin(data, bl)
+f = biquad_peq(.1 * np.pi, 10., 5.)
+data = biquad(data, f)
 
 sd.play(data, fs)
