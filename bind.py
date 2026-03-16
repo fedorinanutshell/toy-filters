@@ -51,7 +51,8 @@ biquad_lp = lib.biquad_lp
 biquad_hp = lib.biquad_hp
 biquad_bp = lib.biquad_bp
 biquad_notch = lib.biquad_notch
-for biquad in biquad_lp, biquad_hp, biquad_bp, biquad_notch:
+biquad_ap = lib.biquad_ap
+for biquad in biquad_lp, biquad_hp, biquad_bp, biquad_notch, biquad_ap:
     biquad.argtypes = [c.c_float, c.c_float]
     biquad.restype = c_biquad
 biquad_peq = lib.biquad_peq

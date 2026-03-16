@@ -160,6 +160,19 @@ struct biquad biquad_notch(float omega, float q) {
   };
 }
 
+struct biquad biquad_ap(float omega, float q) {
+  float alpha = sinf(omega) / (2.f * q);
+  return (struct biquad) {
+    1.f + alpha,
+    -2.f * cosf(omega),
+    1.f - alpha,
+    1.f - alpha,
+    -2.f * cosf(omega),
+    1.f + alpha,
+    .0f, .0f, .0f, .0f,
+  };
+}
+
 void biquad_proc(const float *x, float *y, size_t n, struct biquad *biquad) {
   for (uint64_t i = 0; i < n; ++i) {
     y[i] = (biquad->b_0 * x[i] + biquad->b_1 * biquad->x_1 + biquad->b_2 * biquad->x_2 - biquad->a_1 * biquad->y_1 - biquad->a_2 * biquad->y_2) / biquad->a_0;
