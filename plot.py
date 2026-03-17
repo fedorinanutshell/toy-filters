@@ -1,4 +1,4 @@
-from bind import biquad, biquad_ap
+from bind import biquad, biquad_allpass
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 x = np.zeros(2**16, np.float32)
 x[0] = 1.
 
-f = biquad_ap(.3 * np.pi, 7.)
+f = biquad_allpass(.3 * np.pi, 7.)
 
 y = biquad(x, f)
 print('DC gain:', sum(y))

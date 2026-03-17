@@ -16,7 +16,7 @@ struct bilin bilin(float a_0, float a_1,
   };
 }
 
-struct bilin bilin_lp(float o) {
+struct bilin bilin_lowpass(float o) {
   const float s = sinf(o), c = cosf(o);
   return bilin(
     s + 1.f + c,
@@ -26,7 +26,7 @@ struct bilin bilin_lp(float o) {
   );
 }
 
-struct bilin bilin_ls(float o, float g) {
+struct bilin bilin_lowshelf(float o, float g) {
   const float s = sinf(o), c = cosf(o);
   return bilin(
     1.f / g * s + 1.f + c,
@@ -36,7 +36,7 @@ struct bilin bilin_ls(float o, float g) {
   );
 }
 
-struct bilin bilin_hp(float o) {
+struct bilin bilin_highpass(float o) {
   const float s = sinf(o), c = cos(o);
   return bilin(
     s + 1.f + c,
@@ -46,7 +46,7 @@ struct bilin bilin_hp(float o) {
   );
 }
 
-struct bilin bilin_hs(float o, float g) {
+struct bilin bilin_highshelf(float o, float g) {
   const float s = sinf(o), c = cosf(o);
   return bilin(
     s + 1.f / g + 1.f / g * c,
@@ -56,7 +56,7 @@ struct bilin bilin_hs(float o, float g) {
   );
 }
 
-struct bilin bilin_ap(float o) {
+struct bilin bilin_allpass(float o) {
   const float s = sinf(o), c = cosf(o);
   return bilin(
     s + 1.f + c,
@@ -66,7 +66,7 @@ struct bilin bilin_ap(float o) {
   );
 }
 
-void bilin_proc(const float *x, float *y, size_t n, struct bilin *bilin) {
+void bilin_process(const float *x, float *y, size_t n, struct bilin *bilin) {
   for (uint64_t i = 0; i < n; ++i) {
     y[i] = (bilin->b_0 * x[i] + bilin->b_1 * bilin->x_1 - bilin->a_1 * bilin->y_1) / bilin->a_0;
     bilin->x_1 = x[i]; bilin->y_1 = y[i];
@@ -87,7 +87,7 @@ struct biquad biquad(float a_0, float a_1, float a_2,
   };
 }
 
-struct biquad biquad_peq(float o, float q, float g) {
+struct biquad biquad_peakeq(float o, float q, float g) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q);
   return biquad(
     1.f + a / g,
@@ -99,7 +99,7 @@ struct biquad biquad_peq(float o, float q, float g) {
   );
 }
 
-struct biquad biquad_lp(float o, float q) {
+struct biquad biquad_lowpass(float o, float q) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q);
   return biquad(
     1.f + a,
@@ -111,7 +111,7 @@ struct biquad biquad_lp(float o, float q) {
   );
 }
 
-struct biquad biquad_ls(float o, float q, float g) {
+struct biquad biquad_lowshelf(float o, float q, float g) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q), r = sqrtf(g);
   return biquad(
     (g + 1.f) + (g - 1.f) * c + 2.f * r * a,
@@ -123,7 +123,7 @@ struct biquad biquad_ls(float o, float q, float g) {
   );
 }
 
-struct biquad biquad_hp(float o, float q) {
+struct biquad biquad_highpass(float o, float q) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q);
   return biquad(
     1.f + a,
@@ -135,7 +135,7 @@ struct biquad biquad_hp(float o, float q) {
   );
 }
 
-struct biquad biquad_hs(float o, float q, float g) {
+struct biquad biquad_highshelf(float o, float q, float g) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q), r = sqrtf(g);
   return biquad(
     (g + 1.f) + (g - 1.f) * c + 2.f * r * a,
@@ -147,7 +147,7 @@ struct biquad biquad_hs(float o, float q, float g) {
   );
 }
 
-struct biquad biquad_bp(float o, float q) {
+struct biquad biquad_bandpass(float o, float q) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q);
   return biquad(
     1.f + a,
@@ -171,7 +171,7 @@ struct biquad biquad_notch(float o, float q) {
   );
 }
 
-struct biquad biquad_ap(float o, float q) {
+struct biquad biquad_allpass(float o, float q) {
   const float s = sinf(o), c = cosf(o), a = s / (2.f * q);
   return biquad(
     1.f + a,
@@ -183,7 +183,7 @@ struct biquad biquad_ap(float o, float q) {
   );
 }
 
-void biquad_proc(const float *x, float *y, size_t n, struct biquad *biquad) {
+void biquad_process(const float *x, float *y, size_t n, struct biquad *biquad) {
   for (uint64_t i = 0; i < n; ++i) {
     y[i] = (biquad->b_0 * x[i] + biquad->b_1 * biquad->x_1 + biquad->b_2 * biquad->x_2 - biquad->a_1 * biquad->y_1 - biquad->a_2 * biquad->y_2) / biquad->a_0;
     biquad->x_2 = biquad->x_1; biquad->x_1 = x[i]; biquad->y_2 = biquad->y_1; biquad->y_1 = y[i];
