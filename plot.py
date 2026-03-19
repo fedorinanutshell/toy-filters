@@ -1,4 +1,4 @@
-from bind import biquad, biquad_allpass
+from bind import biquad_allpass
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -6,9 +6,7 @@ from matplotlib import pyplot as plt
 x = np.zeros(2**16, np.float32)
 x[0] = 1.
 
-f = biquad_allpass(.3 * np.pi, 7.)
-
-y = biquad(x, f)
+y = biquad_allpass(.3 * np.pi, 7.)(x)
 print('DC gain:', sum(y))
 (z := y.copy())[1::2] *= -1.
 print('Nyquist gain:', sum(z))
